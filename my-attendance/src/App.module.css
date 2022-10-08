@@ -2,9 +2,9 @@
 	/* App commons */
 	/* #4F4319 */
 	--bgColor: #3b3212;
-	--maincolor: #907b2c;
+	--higlight: #907b2c;
 	--contrast: white;
-	--text: white;
+	--text: #3b3212;
 	--activeLink: #dbb939;
 	/* --activeLink: #60d9fb; */
 	--activeLinkLight: hsl(193, 100%, 95%);
