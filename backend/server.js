@@ -8,6 +8,9 @@ const HttpError = require('./O_models/m_error');
 
 //-------------------------Import routers
 
+const attendanceRts = require('./Y_routers/r_attendance');
+const employeeRts = require('./Y_routers/r_employee');
+
 //-------------------------Set main var
 const testing = true;
 
@@ -30,6 +33,8 @@ app.use(express.json());
 app.use('/test', (req, res, next) => {
 	res.status(201).json('Sembra tutto ok, sembra tutto OK!');
 });
+app.use('/attendance', attendanceRts);
+app.use('/employee', employeeRts);
 
 // >>> Error Handler
 // Check Route
