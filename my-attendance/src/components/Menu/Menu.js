@@ -6,11 +6,23 @@ import { MenuElements } from '../../__data/common';
 import classes from './Menu.module.css';
 
 function Menu() {
-	// MenuElements;
+	const [openElId, setOpenElId] = useState('');
 
 	const showSubMenu = id => {
-		// let el = document.getElementById(id);
-		// el.classList.toggle(classes.subM_Visible);
+		setOpenElId(id + 'parent');
+		let el = document.getElementById(id);
+		el.classList.toggle(classes.subM_Visible);
+		let pEl = document.getElementById(id + 'parent');
+		pEl.classList.toggle(classes.navElOpen);
+	};
+
+	const hideSubMenu = level => {
+		console.log(level);
+		let el = document.getElementsByClassName(classes.subM_Visible);
+		Array.prototype.map.call(el, e => {
+			e.classList.toggle(classes.subM_Visible);
+		});
+		setOpenElId('');
 	};
 
 	//TODO: Valutare sottomenù e gestione animazione apertura/chiusura
@@ -24,7 +36,9 @@ function Menu() {
 			switch (level) {
 				case 0:
 					classN = navData =>
-						`${classes.navEl} ${navData.isActive && classes.active}`;
+						`${classes.navEl} ${navData.isActive && classes.active} ${
+							openElId == e._id + 'parent' && classes.active
+						}`;
 					break;
 				case 1:
 					classN = navData =>
@@ -44,6 +58,7 @@ function Menu() {
 					<React.Fragment>
 						<NavLink
 							key={e._id}
+							id={e._id + 'parent'}
 							className={classN}
 							to={e.path}
 							style={{ marginBottom: 0 }}
@@ -51,15 +66,21 @@ function Menu() {
 						>
 							{e.description}
 						</NavLink>
-						<div id={e._id} className={`${classes.subM}`}>
+						<div id={e._id} className={`${classes.subM}`} level={level}>
 							{subElement}
 						</div>
 					</React.Fragment>
 				);
 			}
-
+			console.log(e.description + ' level: ' + level);
 			return (
-				<NavLink key={e._id} className={classN} to={e.path}>
+				<NavLink
+					key={e._id}
+					className={classN}
+					to={e.path}
+					onClick={level === 0 ? () => hideSubMenu(level) : ''}
+					level={level}
+				>
 					{e.description}
 				</NavLink>
 			);
@@ -70,7 +91,7 @@ function Menu() {
 	return (
 		<div className={classes.container}>
 			<nav className={classes.navigation}>{evalMenuElements(MenuElements)}</nav>
-			<div>Login / Logout</div>
+			<div className={classes.navElOpen}> Login / Logout</div>
 		</div>
 	);
 }

@@ -24,7 +24,7 @@ function App() {
 				const subRoutes = evalRoutes(rSubs);
 
 				return (
-					<Route path={rPath} element={`<${rElement} />`}>
+					<Route path={rPath} element={comp[rElement]}>
 						{subRoutes}
 					</Route>
 				);

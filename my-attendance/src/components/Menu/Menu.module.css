@@ -30,6 +30,11 @@
 	text-decoration: underline;
 }
 
+.navElOpen {
+	border: var(--higlight) solid 1px;
+	/* border-bottom: var(--contrast) dotted 1px; */
+}
+
 .subM {
 	display: flex;
 	flex-direction: column;
@@ -39,11 +44,15 @@
 	height: 1rem;
 	visibility: hidden;
 	border: var(--higlight) solid 1px;
+	border-top: none;
 	overflow: hidden;
+	/* background-color: var(--higlight); */
 }
 
 .subM_Visible {
-	animation: showSubMenu 500ms both;
+	height: 100%;
+	visibility: visible;
+	/* animation: showSubMenu 500ms both; */
 }
 
 .navSubEl1 {
