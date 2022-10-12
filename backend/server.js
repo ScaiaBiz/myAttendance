@@ -34,7 +34,7 @@ app.use('/test', (req, res, next) => {
 	res.status(201).json('Sembra tutto ok, sembra tutto OK!');
 });
 app.use('/attendance', attendanceRts);
-app.use('/employee', employeeRts);
+// app.use('/employee', employeeRts);
 
 // >>> Error Handler
 // Check Route
