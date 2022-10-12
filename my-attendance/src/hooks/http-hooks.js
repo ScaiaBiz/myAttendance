@@ -4,9 +4,9 @@ export const useHttpClient = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const APP_name = process.env.REACT_APP_NAME;
-	const SRV_port = process.env.REACT_APP_SRVPORT;
-	const SRV_name = process.env.REACT_APP_SRVNAME;
-	const SRV_debug = process.env.REACT_APP_SRVDEBUG;
+	const SRV_port = process.env.REACT_APP_SRVPORT || 3106;
+	const SRV_name = process.env.REACT_APP_SRVNAME || 'localhost';
+	const SRV_debug = process.env.REACT_APP_SRVDEBUG || 'localhost';
 
 	let debug = true;
 
@@ -23,6 +23,7 @@ export const useHttpClient = () => {
 	}
 
 	const SRV = srv;
+	// console.log({ SRV });
 
 	const sendRequest = useCallback(
 		async (url, method = 'GET', body = undefined, headers = {}) => {
