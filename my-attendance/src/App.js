@@ -5,31 +5,33 @@ import Menu from './components/Menu/Menu';
 
 import classes from './App.module.css';
 import Presenze from './components/Presenze/Presenze';
+import Dipendenti from './components/Presenze/Dipendenti';
 
 const comp = {
 	Presenze: <Presenze />,
+	Dipendenti: <Dipendenti />,
 };
 
 function App() {
-	const evalRoutes = elements => {
-		console.log(elements);
+	const evalRoutes = (elements, pRoute = '') => {
+		console.log({ elements });
+		console.log({ pRoute });
 		const appRoutes = elements.map(el => {
-			let rPath = el.path;
+			let rPath = pRoute + el.path;
+			console.log({ rPath });
 			let rElement = el.element;
 			let rSubs = el.subMenu;
 
-			// const sResult = `Route path={${rPath}} element={<${rElement}/>}`
-
 			if (rSubs?.length > 0) {
-				const subRoutes = evalRoutes(rSubs);
+				const subRoutes = evalRoutes(rSubs, rPath);
 
 				return (
-					<Route path={rPath} element={comp[rElement]}>
+					<Route key={el._id} path={rPath} element={comp[rElement]}>
 						{subRoutes}
 					</Route>
 				);
 			}
-			return <Route path={rPath} element={comp[rElement]} />;
+			return <Route key={el._id} path={rPath} element={comp[rElement]} />;
 		});
 		return appRoutes;
 	};
