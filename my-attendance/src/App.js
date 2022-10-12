@@ -14,11 +14,11 @@ const comp = {
 
 function App() {
 	const evalRoutes = (elements, pRoute = '') => {
-		console.log({ elements });
-		console.log({ pRoute });
+		// console.log({ elements });
+		// console.log({ pRoute });
 		const appRoutes = elements.map(el => {
 			let rPath = pRoute + el.path;
-			console.log({ rPath });
+			// console.log({ rPath });
 			let rElement = el.element;
 			let rSubs = el.subMenu;
 
