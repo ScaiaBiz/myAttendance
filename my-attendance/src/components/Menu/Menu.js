@@ -27,10 +27,7 @@ function Menu() {
 
 	//TODO: Valutare sottomenù e gestione animazione apertura/chiusura
 
-	const evalMenuElements = (el, level) => {
-		if (!level) {
-			level = 0;
-		}
+	const evalMenuElements = (el, level = 0, parentPath = '') => {
 		const menuEl = el.map(e => {
 			let classN;
 			switch (level) {
@@ -52,15 +49,14 @@ function Menu() {
 			}
 
 			if (e.subMenu?.length > 0) {
-				level++;
-				const subElement = evalMenuElements(e.subMenu, level);
+				const subElement = evalMenuElements(e.subMenu, level + 1, e.path);
 				return (
 					<React.Fragment>
 						<NavLink
 							key={e._id}
 							id={e._id + 'parent'}
 							className={classN}
-							to={e.path}
+							to={parentPath + e.path}
 							style={{ marginBottom: 0 }}
 							onClick={() => showSubMenu(e._id)}
 						>
@@ -77,7 +73,7 @@ function Menu() {
 				<NavLink
 					key={e._id}
 					className={classN}
-					to={e.path}
+					to={parentPath + e.path}
 					onClick={level === 0 ? () => hideSubMenu(level) : ''}
 					level={level}
 				>
