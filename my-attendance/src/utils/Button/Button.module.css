@@ -16,7 +16,8 @@
 	border: var(--ButtonStdTxtColor) 2px solid;
 }
 .confirm:hover,
-.confirm:active {
+.confirm:active,
+.confirm:focus {
 	background-color: var(--ButtonStdTxtColor);
 	color: var(--ButtonStdBgColor);
 	border: var(--ButtonStdBgColor) 2px solid;
@@ -28,6 +29,7 @@
 	border: var(--ButtonStdBgColor) 2px solid;
 }
 .reverse:hover,
+.reverse:focus,
 .reverse:active {
 	background-color: var(--ButtonStdBgColor);
 	color: var(--ButtonStdTxtColor);
@@ -42,6 +44,7 @@
 }
 
 .danger:hover,
+.danger:focus,
 .danger:active {
 	background-color: var(--ButtonDngrTxtColor);
 	color: var(--ButtonDngrBgColor);
@@ -49,7 +52,9 @@
 }
 
 .base:disabled,
+.base:disabled,
 .base:hover:disabled,
+.base:focus:disabled,
 .base:active:disabled {
 	background-color: var(--ENDEDtext);
 	color: var(--ENDED);
