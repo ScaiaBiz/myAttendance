@@ -35,7 +35,7 @@ function Presenze() {
 	};
 
 	useEffect(() => {
-		console.log({ currentDate });
+		// console.log({ currentDate });
 		if (currentDate) {
 			insertRecordHandler();
 		}
@@ -101,12 +101,12 @@ function Presenze() {
 			const dayRows = [];
 
 			let dateInUse;
-			let isExit = false;
 			for (
 				let filterDate = startDate.getTime();
 				filterDate <= endDate.getTime();
 				filterDate += 24 * 60 * 60 * 1000
 			) {
+				let isExit = false;
 				dateInUse = filterDate;
 				let fDate = dmyFromDateString(new Date(filterDate));
 				let dayRow = [];
@@ -119,9 +119,7 @@ function Presenze() {
 							dayRow.push(re);
 							isExit = !isExit;
 						}
-						return false;
-					} else {
-						isExit = false;
+						return;
 					}
 				});
 				let lastRecordDate;

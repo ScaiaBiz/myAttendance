@@ -51,7 +51,7 @@ function InsertRecord({ clear, wData }) {
 		const postingDate = new Date(
 			`${year}-${month}-${day} ${formState.inputs.hours.value}:${formState.inputs.minutes.value}:01`
 		);
-		console.log('PoPPosto: ' + postingDate);
+		// console.log('PoPPosto: ' + postingDate);
 
 		const records = await sendRequest(
 			'attendance/insertRecors',
