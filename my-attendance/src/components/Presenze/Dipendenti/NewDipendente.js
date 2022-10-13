@@ -1,13 +1,18 @@
 import React from 'react';
 
-import classes from './NewDipendenete.module.css';
+import classes from './NewDipendente.module.css';
 
 import { useForm } from '../../../hooks/form-hook';
 import { VALIDATOR_NO, VALIDATOR_REQUIRE } from '../../../utils/validators';
+// import { useHttpClient } from '../../../hooks/http-hooks';
+import { useHttpClient } from '../../../hooks/http-hooks';
 
 import Input from '../../../utils/Inputs/Input';
+import Button from '../../../utils/Button/Button';
+import LoadingSpinner from '../../../utils/LoadingSpinner';
+import ErrorModal from '../../../utils/ErrorModal';
 
-const NewDipendente = ({ clear }) => {
+const NewDipendente = ({ close }) => {
 	const [formState, inputHandler, setFormData] = useForm({
 		name: {
 			value: '',
@@ -52,44 +57,44 @@ const NewDipendente = ({ clear }) => {
 		},
 		roundsIN: {
 			value: '',
-			isValid: false,
+			isValid: true,
 			el: 'input',
 			type: 'number',
 			label: 'Arrot. Entrata',
 			validator: [VALIDATOR_REQUIRE()],
 			initValue: 15,
-			initIsValid: false,
+			initIsValid: true,
 		},
 		roundsOUT: {
 			value: '',
-			isValid: false,
+			isValid: true,
 			el: 'input',
 			type: 'number',
 			label: 'Arrot. USCITA',
 			validator: [VALIDATOR_REQUIRE()],
 			initValue: 15,
-			initIsValid: false,
+			initIsValid: true,
 		},
 
 		turnId: {
 			value: '',
-			isValid: false,
+			isValid: true,
 			el: 'input',
 			type: 'text',
 			label: 'Turno',
-			validator: [VALIDATOR_REQUIRE()],
+			validator: [VALIDATOR_NO()],
 			initValue: '',
-			initIsValid: false,
+			initIsValid: true,
 		},
 		groupId: {
 			value: '',
-			isValid: false,
+			isValid: true,
 			el: 'input',
 			type: 'text',
 			label: 'Gruppo',
-			validator: [VALIDATOR_REQUIRE()],
+			validator: [VALIDATOR_NO()],
 			initValue: '',
-			initIsValid: false,
+			initIsValid: true,
 		},
 		enableExtras: {
 			value: '',
@@ -97,9 +102,9 @@ const NewDipendente = ({ clear }) => {
 			el: 'checkbox',
 			type: 'checkbox',
 			label: 'Straordinari',
-			validator: [VALIDATOR_REQUIRE()],
-			initValue: '',
-			initIsValid: false,
+			validator: [VALIDATOR_NO()],
+			initValue: true,
+			initIsValid: true,
 		},
 		isActive: {
 			value: '',
@@ -108,10 +113,42 @@ const NewDipendente = ({ clear }) => {
 			type: 'checkbox',
 			label: 'Attivo',
 			validator: [VALIDATOR_NO()],
-			initValue: 'checked',
-			initIsValid: false,
+			initValue: true,
+			initIsValid: true,
 		},
 	});
+
+	const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+	const postData = async e => {
+		e.preventDefault();
+		console.log('Invio Richiesta');
+		const rdata = formState.inputs;
+		let i = await sendRequest(
+			'employee/postNewEmployee',
+			'POST',
+			{
+				name: rdata.name.value,
+				surname: rdata.surname.value,
+				hiringDate: rdata.hiringDate.value,
+				tagId: rdata.tagId.value,
+				roundsIN: rdata.roundsIN.value,
+				roundsOUT: rdata.roundsOUT.value,
+				enableExtras: rdata.enableExtras.value,
+				isActive: rdata.isActive.value,
+				turnId: rdata.turnId.value,
+				groupId: rdata.groupId.value,
+			},
+			{ 'Content-Type': 'application/json' }
+		);
+
+		close();
+	};
+
+	const closeCard = e => {
+		e.preventDefault();
+		close();
+	};
 
 	const setInputs = () => {
 		let inputs = formState.inputs;
@@ -130,8 +167,8 @@ const NewDipendente = ({ clear }) => {
 					validators={i.validator}
 					errorText='Campo obbligatorio'
 					onInput={inputHandler}
-					initValue=''
-					initIsValid={false}
+					initValue={i.initValue}
+					initIsValid={i.initIsValid}
 				/>
 			);
 		});
@@ -140,9 +177,28 @@ const NewDipendente = ({ clear }) => {
 
 	return (
 		<React.Fragment>
-			<div className={classes.container} onClick={clear} />
+			{isLoading && <LoadingSpinner asOverlay />}
+			{error && <ErrorModal error={error} onClear={clearError} />}
+			<div className={classes.container} onClick={close} />
 			<div className={classes.content}>
-				<div className={classes.form}>{setInputs()}</div>
+				<div className={classes.form}>
+					{setInputs()}
+					<Button
+						clname='danger'
+						onClick={closeCard}
+						style={{ width: 25 + '%', fontSize: 20 + 'px' }}
+					>
+						Annulla
+					</Button>
+					<Button
+						clname='confirm'
+						style={{ width: 40 + '%', fontSize: 20 + 'px' }}
+						disabled={!formState.isValid}
+						onClick={postData}
+					>
+						Inserisci
+					</Button>
+				</div>
 			</div>
 		</React.Fragment>
 	);
