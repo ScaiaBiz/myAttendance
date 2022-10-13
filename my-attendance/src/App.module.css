@@ -1,4 +1,12 @@
 :root {
+	/* Main colotos */
+	--ONGOING: hsl(100, 50%, 50%);
+	--ENDED: hsl(0, 0%, 80%);
+	--ENDEDtext: hsl(0, 0%, 60%);
+	--PAUSED: hsl(51, 50%, 50%);
+	--STOPED: hsl(0, 50%, 50%);
+	--TODO: hsl(180, 50%, 50%);
+
 	/* App commons */
 	/* #4F4319 */
 	--bgLight: lightgrey;
@@ -7,33 +15,21 @@
 	--contrast: white;
 	--text: #3b3212;
 	--activeLink: #dbb939;
-	/* --activeLink: #60d9fb; */
 	--activeLinkLight: hsl(193, 100%, 95%);
 	--backdrop: hsla(47, 53%, 15%, 0.6);
-	/* --overlay: #3c5280;
-	--overlayBg: #3c528091; */
-	/* --overlayBg: hsl(223, 100%, 93%); */
-	/* --overlayBg: rgba(255, 255, 255, 0.9); */
+	--error: var(--STOPED);
 
 	/* Elemetns */
 	--StandardBgColor: var(--activeLink);
-	/* --StandardBgColor: #61dafb; */
-	--DangerBgColor: #d11010;
+	/* --DangerBgColor: #d11010; */
+	--DangerBgColor: var(--STOPED);
 
 	/* Button */
 	--ButtonStdBgColor: var(--activeLink);
-	/* --ButtonStdBgColor: #61dafb; */
-	--ButtonStdTxtColor: VAR(--maincolor);
-	--ButtonDngrBgColor: var(--ENDED);
-	/* --ButtonDngrBgColor: crimson; */
-	--ButtonDngrTxtColor: white;
+	--ButtonStdTxtColor: var(--bgColor);
+	--ButtonDngrBgColor: var(--STOPED);
+	--ButtonDngrTxtColor: var(--contrast);
 
-	--ONGOING: hsl(100, 50%, 50%);
-	--ENDED: hsl(0, 0%, 80%);
-	--ENDEDtext: hsl(0, 0%, 60%);
-	--PAUSED: hsl(51, 50%, 50%);
-	--STOPED: hsl(0, 50%, 50%);
-	--TODO: hsl(180, 50%, 50%);
 	/* --ABORTED: hsl(0, 0%, 48%); */
 	/* --COMPLETED: hsl(0, 50%, 50%); */
 }
