@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Modal from './Modal';
-// import Button from './Button';
+import Button from './Button/Button';
 
 const ErrorModal = props => {
 	return (
@@ -11,9 +11,9 @@ const ErrorModal = props => {
 			headerClass='header danger'
 			show={props.error}
 			footer={
-				<button onClick={props.onClear} autofocus={true}>
+				<Button clname={'danger'} onClick={props.onClear} autofocus={true}>
 					Okay
-				</button>
+				</Button>
 			}
 		>
 			<p>{props.error}</p>

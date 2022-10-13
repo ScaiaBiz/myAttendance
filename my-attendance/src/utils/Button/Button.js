@@ -33,10 +33,11 @@ const Button = props => {
 	return (
 		<button
 			className={classes.base + ' ' + btncls()}
+			style={props.style}
 			type={props.type}
 			onClick={props.onClick}
 			disabled={props.disabled}
-			style={props.style}
+			// style={props.style}
 			autoFocus={props.autofocus}
 		>
 			{props.children}

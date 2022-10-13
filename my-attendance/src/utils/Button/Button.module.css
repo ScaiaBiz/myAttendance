@@ -6,37 +6,38 @@
 	cursor: pointer;
 	text-decoration: none;
 	display: inline-block;
-	box-shadow: 1px 1px 4px grey;
+	box-shadow: 1px 1px 4px var(--bgColor);
+	border: #000 2px solid;
 }
 
-.default {
+.confirm {
 	background-color: var(--ButtonStdBgColor);
 	color: var(--ButtonStdTxtColor);
-	border: var(--ButtonStdTxtColor) 1px solid;
+	border: var(--ButtonStdTxtColor) 2px solid;
 }
-.default:hover,
-.default:active {
+.confirm:hover,
+.confirm:active {
 	background-color: var(--ButtonStdTxtColor);
 	color: var(--ButtonStdBgColor);
-	border: var(--ButtonStdBgColor) 1px solid;
+	border: var(--ButtonStdBgColor) 2px solid;
 }
 
 .reverse {
 	background-color: var(--ButtonStdTxtColor);
 	color: var(--ButtonStdBgColor);
-	border: var(--ButtonStdBgColor) 1px solid;
+	border: var(--ButtonStdBgColor) 2px solid;
 }
 .reverse:hover,
 .reverse:active {
 	background-color: var(--ButtonStdBgColor);
 	color: var(--ButtonStdTxtColor);
-	border: var(--ButtonStdTxtColor) 1px solid;
+	border: var(--ButtonStdTxtColor) 2px solid;
 }
 
 .danger {
 	background-color: var(--ButtonDngrBgColor);
 	color: var(--ButtonDngrTxtColor);
-	border: var(--ButtonDngrTxtColor) 1px solid;
+	border: var(--ButtonDngrTxtColor) 2px solid;
 	font-weight: bold;
 }
 
@@ -44,15 +45,15 @@
 .danger:active {
 	background-color: var(--ButtonDngrTxtColor);
 	color: var(--ButtonDngrBgColor);
-	border: var(--ButtonDngrBgColor) 1px solid;
+	border: var(--ButtonDngrBgColor) 2px solid;
 }
 
 .base:disabled,
 .base:hover:disabled,
 .base:active:disabled {
-	background-color: lightgrey;
-	color: lightslategray;
-	border: lightslategray 1px solid;
+	background-color: var(--ENDEDtext);
+	color: var(--ENDED);
+	border: var(--ENDED) 2px solid;
 }
 
 .small {
@@ -60,8 +61,4 @@
 }
 .big {
 	font-size: 1.5rem;
-}
-
-._50 {
-	max-width: 50%;
 }

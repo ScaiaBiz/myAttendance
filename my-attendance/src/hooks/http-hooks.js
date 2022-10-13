@@ -71,7 +71,9 @@ export const useHttpClient = () => {
 				if (responseData?.message && responseData?.errorStatus) {
 					throw new Error(responseData.message);
 				}
-				setIsLoading(false);
+				setTimeout(() => {
+					setIsLoading(false);
+				}, 200);
 				return responseData;
 			} catch (err) {
 				setError(err.message || 'Something went wrong, please try again');

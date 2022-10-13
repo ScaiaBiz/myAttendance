@@ -165,6 +165,7 @@ const Input = props => {
 						type={props.type}
 						onChange={changeHandler}
 						onBlur={toucHandler}
+						defaultChecked={props.initValue}
 						value={inputState.value}
 						className={classes.checkbox}
 						onClick={props.onClick}
