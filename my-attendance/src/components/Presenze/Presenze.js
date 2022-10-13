@@ -27,8 +27,11 @@ function Presenze() {
 	const [currentDate, setCurrentDate] = useState(null);
 
 	const [showInsertRecord, setShowInsertRecord] = useState(false);
-	const insertRecordHandler = () => {
+	const insertRecordHandler = (reload = false) => {
 		setShowInsertRecord(!showInsertRecord);
+		if (reload) {
+			getRecors();
+		}
 	};
 
 	useEffect(() => {
@@ -46,7 +49,7 @@ function Presenze() {
 
 	const addNewRecord = () => {
 		const newRecordForm = (
-			<InsertRecord clear={insertRecordHandler} date={currentDate} />
+			<InsertRecord clear={insertRecordHandler} wData={currentDate} />
 		);
 
 		return ReactDom.createPortal(
@@ -59,7 +62,7 @@ function Presenze() {
 
 	const getRecors = async date => {
 		const records = await sendRequest(
-			'attendance/getRecors',
+			'attendance/getRecords',
 			'POST',
 			{ date: date },
 			{ 'Content-Type': 'application/json' }
@@ -117,6 +120,8 @@ function Presenze() {
 							isExit = !isExit;
 						}
 						return false;
+					} else {
+						isExit = false;
 					}
 				});
 				let lastRecordDate;
@@ -218,7 +223,7 @@ function Presenze() {
 								className={classes.totRow}
 								text='add_circle'
 								action={() => {
-									setCurrentDate(fDate);
+									setCurrentDate({ date: fDate, employee: e });
 								}}
 							/>
 						</div>

@@ -11,49 +11,55 @@ import { useForm } from '../../../hooks/form-hook';
 import { VALIDATOR_MIN, VALIDATOR_MAX } from '../../../utils/validators';
 import { useHttpClient } from '../../../hooks/http-hooks';
 
-function InsertRecord({ clear, date }) {
+function InsertRecord({ clear, wData }) {
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
 	const [formState, inputHandler, setFormData] = useForm({
 		hours: {
 			value: '',
-			isValid: true,
+			isValid: false,
 			el: 'input',
 			type: 'number',
 			label: 'Ore',
 			validator: [VALIDATOR_MIN(0), VALIDATOR_MAX(24)],
 			initValue: '',
-			initIsValid: true,
+			initIsValid: false,
 			errorText: 'Valore deve essere fra 0 e 24',
 		},
 		minutes: {
 			value: '',
-			isValid: true,
+			isValid: false,
 			el: 'input',
 			type: 'number',
 			label: 'Minuti',
 			validator: [VALIDATOR_MIN(0), VALIDATOR_MAX(59)],
 			initValue: '',
-			initIsValid: true,
+			initIsValid: false,
 			errorText: 'Valore deve essere fra 0 e 59',
 		},
 	});
 
 	const postData = async e => {
 		e.preventDefault();
-		let year = date.split('/')[2];
-		let month = date.split('/')[1];
-		let day = date.split('/')[0];
+		let year = wData.date.split('/')[2];
+		let month = wData.date.split('/')[1];
+		let day = wData.date.split('/')[0];
 
 		let h = formState.inputs.hours.value;
 		let m = formState.inputs.minutes.value;
-
-		console.log(formState);
 
 		const postingDate = new Date(
 			`${year}-${month}-${day} ${formState.inputs.hours.value}:${formState.inputs.minutes.value}:01`
 		);
 		console.log('PoPPosto: ' + postingDate);
+
+		const records = await sendRequest(
+			'attendance/insertRecors',
+			'POST',
+			{ date: postingDate, tagId: wData.employee.tagId },
+			{ 'Content-Type': 'application/json' }
+		);
+		clear(true);
 	};
 
 	const closeCard = e => {
@@ -75,7 +81,7 @@ function InsertRecord({ clear, date }) {
 					type={i.type}
 					label={i.label}
 					validators={i.validator}
-					errorText='Campo obbligatorio'
+					errorText={i.errorText || 'Campo obbligatorio'}
 					onInput={inputHandler}
 					initValue={i.initValue}
 					initIsValid={i.initIsValid}
@@ -91,7 +97,12 @@ function InsertRecord({ clear, date }) {
 			{error && <ErrorModal error={error} onClear={clearError} />}
 			<div className={classes.background} onClick={clear} />
 			<div className={classes.container}>
-				<div className={classes.title}>Data: {date}</div>
+				<div className={classes.title}>
+					<p style={{ paddingBottom: '10px' }}>
+						{wData.employee.name} {wData.employee.surname}
+					</p>
+					<p>{wData.date}</p>
+				</div>
 				<div className={classes.form}>
 					{setInputs()}
 					<Button

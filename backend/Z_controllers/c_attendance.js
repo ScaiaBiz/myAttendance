@@ -17,9 +17,26 @@ exports.postRecord = async (req, res, next) => {
 	res.status(201).json('ok');
 };
 
-exports.getRecors = async (req, res, next) => {
+exports.insertRecord = async (req, res, next) => {
+	console.log('Ricevo inserimento manuale');
+	const tagId = req.body.tagId;
+	const day = new Date(req.body.date);
+
+	console.log(req.body);
+
+	const record = await new Attendance({
+		tagId: tagId,
+		date: day,
+	});
+
+	record.save();
+
+	res.status(201).json(record);
+};
+
+exports.getRecords = async (req, res, next) => {
 	console.log('Ricevo richiesta records letture');
-	console.log(req.body.date);
+	console.log(req.body.data);
 
 	let startFilter;
 	let endFilter;
@@ -56,7 +73,7 @@ exports.getRecors = async (req, res, next) => {
 		},
 	};
 	try {
-		const data = await Attendance.find(querys);
+		const data = await Attendance.find(querys).sort({ date: 1 });
 		res.status(201).json(data);
 	} catch (error) {
 		// console.log(error);
