@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useOutlet } from 'react-router-dom';
+import ReactDom from 'react-dom';
 
 import classes from './Presenze.module.css';
 import {
@@ -15,6 +16,7 @@ import LoadingSpinner from '../../utils/LoadingSpinner';
 import ErrorModal from '../../utils/ErrorModal';
 import Svg from '../../utils/Svg';
 import FilterPanel from './Dipendenti/FilterPanel';
+import InsertRecord from './Presenze/InsertRecord';
 
 function Presenze() {
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -22,13 +24,38 @@ function Presenze() {
 	const [employees, setEmployees] = useState([]);
 	const [homePage, setHomePage] = useState(null);
 	const [workingDate, setWorkingDate] = useState(null);
-	const [reload, setReload] = useState(true);
+	const [currentDate, setCurrentDate] = useState(null);
+
+	const [showInsertRecord, setShowInsertRecord] = useState(false);
+	const insertRecordHandler = () => {
+		setShowInsertRecord(!showInsertRecord);
+	};
+
+	useEffect(() => {
+		console.log({ currentDate });
+		if (currentDate) {
+			insertRecordHandler();
+		}
+	}, [currentDate]);
 
 	const getData = async () => {
 		let e_data = await sendRequest('employee/getEmployeesList');
 		setEmployees(e_data);
 		getRecors();
 	};
+
+	const addNewRecord = () => {
+		const newRecordForm = (
+			<InsertRecord clear={insertRecordHandler} date={currentDate} />
+		);
+
+		return ReactDom.createPortal(
+			newRecordForm,
+			document.getElementById('modal-hook')
+		);
+	};
+
+	const editRecord = () => {};
 
 	const getRecors = async date => {
 		const records = await sendRequest(
@@ -41,7 +68,6 @@ function Presenze() {
 	};
 
 	useEffect(() => {
-		// console.log({ workingDate });
 		if (workingDate) {
 			getRecors();
 		}
@@ -52,10 +78,6 @@ function Presenze() {
 	const getHomePage = async () => {
 		const today = new Date();
 		const w_day = workingDate === null ? today : workingDate;
-		// console.log({ w_day });
-		// let year = Number(w_day.getFullYear());
-		// let month = Number(w_day.getMonth());
-		// let startDate = new Date(Date.new(year, month, 1, 0, 0, 1));
 		let startDate = w_day;
 		startDate.setDate(1);
 
@@ -72,20 +94,17 @@ function Presenze() {
 			endDate.setMonth(startDate.getMonth());
 		}
 
-		// console.log({ startDate });
-		// console.log({ endDate });
-
-		const resData = [];
-		let totals = [];
 		let employeeAttendances = employees.map(e => {
 			const dayRows = [];
 
+			let dateInUse;
 			let isExit = false;
 			for (
 				let filterDate = startDate.getTime();
 				filterDate <= endDate.getTime();
 				filterDate += 24 * 60 * 60 * 1000
 			) {
+				dateInUse = filterDate;
 				let fDate = dmyFromDateString(new Date(filterDate));
 				let dayRow = [];
 				tagRecords.map(re => {
@@ -112,12 +131,12 @@ function Presenze() {
 					}
 
 					if (!m.isExit) {
-						console.log(
-							'Entrata: ' +
-								TotalMinToHourMin(
-									roundHoursFromDate(recordDate, false, m.isExit, e.roundsIN)
-								)
-						);
+						// console.log(
+						// 	'Entrata: ' +
+						// 		TotalMinToHourMin(
+						// 			roundHoursFromDate(recordDate, false, m.isExit, e.roundsIN)
+						// 		)
+						// );
 						workedMins -= roundHoursFromDate(
 							recordDate,
 							false,
@@ -125,12 +144,12 @@ function Presenze() {
 							e.roundsIN
 						);
 					} else {
-						console.log(
-							'Uscita: ' +
-								TotalMinToHourMin(
-									roundHoursFromDate(recordDate, false, m.isExit, e.roundsIN)
-								)
-						);
+						// console.log(
+						// 	'Uscita: ' +
+						// 		TotalMinToHourMin(
+						// 			roundHoursFromDate(recordDate, false, m.isExit, e.roundsIN)
+						// 		)
+						// );
 						workedMins += roundHoursFromDate(
 							recordDate,
 							false,
@@ -141,9 +160,13 @@ function Presenze() {
 					}
 
 					return (
-						<div className={classes.dailyTime_time}>
-							{m.isExit ? 'U: ' : 'E: '} {TimeFromDateString(m.date)}
-						</div>
+						// <div
+						// 	className={classes.dailyTime_time}
+						// 	onClick={() => console.log({ recordDate })}
+						// >
+						// 	{m.isExit ? 'U: ' : 'E: '} {TimeFromDateString(m.date)}
+						// </div>
+						m
 					);
 				});
 
@@ -152,7 +175,18 @@ function Presenze() {
 				dayRows.push(
 					<div className={classes.dailyRow}>
 						<div className={classes.dailyDate}>{fDate}</div>
-						<div className={classes.dailyTime}>{movements}</div>
+						<div className={classes.dailyTime}>
+							{movements.map(m => {
+								return (
+									<div
+										className={classes.dailyTime_time}
+										onClick={() => console.log(m.date)}
+									>
+										{m.isExit ? 'U: ' : 'E: '} {TimeFromDateString(m.date)}
+									</div>
+								);
+							})}
+						</div>
 						<div
 							className={`${classes.totRow} ${
 								Number(workedMins) < 0 ? classes.totRowError : ''
@@ -176,17 +210,20 @@ function Presenze() {
 								alignItems: 'center',
 								justifyContent: 'flex-end',
 							}}
-							onClick={() => console.log(dayRow)}
+							// onClick={() => {
+							// console.log(fDate);
+							// }}
 						>
 							<Svg
 								className={classes.totRow}
 								text='add_circle'
-								action={() => console.log('Aggio Clicketo')}
+								action={() => {
+									setCurrentDate(fDate);
+								}}
 							/>
 						</div>
 					</div>
 				);
-				// console.log('Riga inserita, azzero conteggio: ' + workedMins);
 				workedMins = 0;
 			}
 
@@ -239,6 +276,7 @@ function Presenze() {
 		<React.Fragment>
 			{error && <ErrorModal error={error} onClear={clearError} />}
 			{isLoading && <LoadingSpinner asOverlay />}
+			{showInsertRecord && addNewRecord()}
 			<div className={classes.container}>
 				<NavLink to={'/Presenze'} className={classes.navigation}>
 					<h1 className={classes.header}>Presenze</h1>
