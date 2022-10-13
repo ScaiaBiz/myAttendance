@@ -11,8 +11,11 @@ const employeeSchema = new Schema({
 	roundsIN: { type: Number },
 	roundsOUT: { type: Number },
 	enableExtras: { typeof: Boolean },
-	turnId: { type: Schema.Types.ObjectId, ref: 'Turn', require: true },
-	groupId: { type: Schema.Types.ObjectId, ref: 'Group', require: true },
+	// turnId: { type: Schema.Types.ObjectId, ref: 'Turn' },
+	turnId: { type: String },
+	// groupId: { type: Schema.Types.ObjectId, ref: 'Group' },
+	groupId: { type: String },
+	creationDate: { type: Date },
 });
 
 // activitySchema.methods.updateActivity = function (activity) {};
