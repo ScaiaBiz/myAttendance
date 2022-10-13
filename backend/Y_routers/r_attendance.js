@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get('/postRecord/:tagId', attendanceCtrl.postRecord);
 
-router.get('/getRecors', attendanceCtrl.getRecors);
+router.post('/getRecors', attendanceCtrl.getRecors);
 
 module.exports = router;

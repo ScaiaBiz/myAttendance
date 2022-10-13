@@ -19,22 +19,36 @@ exports.postRecord = async (req, res, next) => {
 
 exports.getRecors = async (req, res, next) => {
 	console.log('Ricevo richiesta records letture');
+	console.log(req.body.date);
 
-	const startFilter = new Date(0);
-	// const startFilter = new Date(
-	// 	req.body?.startDate !== '' ? req.body.startDate : new Date(0)
-	//     );
+	let startFilter;
+	let endFilter;
+	let r_date = new Date();
+	// let r_month
+	// let r_year
 
-	const endFilter = new Date();
-	// const endFilter =
-	// 	req.body?.endDate !== ''
-	// 		? new Date(req.body.endDate + ' 23:59:59')
-	// 		: new Date();
+	if (req.body.date) {
+		r_date = new Date(req.body.date);
+	}
+
+	console.log(r_date);
+	let r_month = new Date(r_date).getMonth();
+	let r_year = new Date(r_date).getFullYear();
+
+	startFilter = new Date(Date.UTC(r_year, r_month, 1, 00, 00, 01));
+
+	let dummyEndFilter = new Date(Date.UTC(r_year, r_month, 31, 12, 00, 01));
+	let r_day = Number(dummyEndFilter.getDate());
+
+	console.log({ r_day });
+	console.log({ dummyEndFilter });
+	endFilter = new Date(
+		Date.UTC(r_year, r_month, r_day === 31 ? 31 : 31 - r_day, 23, 59, 59)
+	);
 
 	console.log({ startFilter });
 	console.log({ endFilter });
 
-	// contactId: customerId,
 	const querys = {
 		date: {
 			$gte: startFilter,
