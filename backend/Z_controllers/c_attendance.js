@@ -43,6 +43,7 @@ exports.editRecord = async (req, res, next) => {
 		console.log(req.body);
 		const recId = req.body.recordId;
 		const day = new Date(req.body.date);
+		const del = Boolean(req.body.delete);
 
 		console.log(req.body);
 
@@ -50,9 +51,14 @@ exports.editRecord = async (req, res, next) => {
 			_id: recId,
 		});
 
-		record.date = day;
-
-		await record.save();
+		if (del) {
+			console.log('<<< Cancello record');
+			await record.delete();
+		} else {
+			console.log('<<< Modifico record');
+			record.date = day;
+			await record.save();
+		}
 
 		res.status(201).json(record);
 	} catch (error) {

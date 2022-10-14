@@ -17,6 +17,7 @@ import ErrorModal from '../../utils/ErrorModal';
 import Svg from '../../utils/Svg';
 import FilterPanel from './Dipendenti/FilterPanel';
 import InsertRecord from './Presenze/InsertRecord';
+import EditRecord from './Presenze/EditRecord';
 
 function Presenze() {
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -49,18 +50,25 @@ function Presenze() {
 
 	const addNewRecord = () => {
 		console.log(currentDate);
-		const newRecordForm = (
-			<InsertRecord
-				clear={insertRecordHandler}
-				wData={currentDate}
-				edit={currentDate.edit}
-			/>
-		);
+		if (currentDate.edit) {
+			const editRecordForm = (
+				<EditRecord clear={insertRecordHandler} wData={currentDate} />
+			);
 
-		return ReactDom.createPortal(
-			newRecordForm,
-			document.getElementById('modal-hook')
-		);
+			return ReactDom.createPortal(
+				editRecordForm,
+				document.getElementById('modal-hook')
+			);
+		} else {
+			const newRecordForm = (
+				<InsertRecord clear={insertRecordHandler} wData={currentDate} />
+			);
+
+			return ReactDom.createPortal(
+				newRecordForm,
+				document.getElementById('modal-hook')
+			);
+		}
 	};
 
 	const getRecors = async date => {

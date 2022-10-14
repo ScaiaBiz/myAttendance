@@ -1,6 +1,6 @@
 import React from 'react';
 
-import classes from './InsertRecord.module.css';
+import classes from './EditRecord.module.css';
 
 import LoadingSpinner from '../../../utils/LoadingSpinner';
 import ErrorModal from '../../../utils/ErrorModal';
@@ -8,34 +8,54 @@ import Button from '../../../utils/Button/Button';
 import Input from '../../../utils/Inputs/Input';
 
 import { useForm } from '../../../hooks/form-hook';
-import { VALIDATOR_MIN, VALIDATOR_MAX } from '../../../utils/validators';
+import {
+	VALIDATOR_MIN,
+	VALIDATOR_MAX,
+	VALIDATOR_NO,
+} from '../../../utils/validators';
 import { useHttpClient } from '../../../hooks/http-hooks';
 
-function InsertRecord({ clear, wData }) {
+function EditRecord({ clear, wData }) {
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+	const checkedHandler = () => {
+		let _val = document.getElementById('delete').checked;
+		inputHandler('delete', _val, true);
+	};
 
 	const [formState, inputHandler, setFormData] = useForm({
 		hours: {
 			value: '',
-			isValid: false,
+			isValid: true,
 			el: 'input',
 			type: 'number',
 			label: 'Ore',
 			validator: [VALIDATOR_MIN(0), VALIDATOR_MAX(24)],
-			initValue: '',
-			initIsValid: false,
+			initValue: wData.time.split(':')[0],
+			initIsValid: true,
 			errorText: 'Valore deve essere fra 0 e 24',
 		},
 		minutes: {
 			value: '',
-			isValid: false,
+			isValid: true,
 			el: 'input',
 			type: 'number',
 			label: 'Minuti',
 			validator: [VALIDATOR_MIN(0), VALIDATOR_MAX(59)],
-			initValue: '',
-			initIsValid: false,
+			initValue: wData.time.split(':')[1],
+			initIsValid: true,
 			errorText: 'Valore deve essere fra 0 e 59',
+		},
+		delete: {
+			value: false,
+			isValid: true,
+			el: 'checkbox',
+			type: 'checkbox',
+			label: 'Elimina timbratura',
+			validator: [VALIDATOR_NO()],
+			initValue: false,
+			initIsValid: true,
+			click: checkedHandler,
 		},
 	});
 
@@ -47,6 +67,7 @@ function InsertRecord({ clear, wData }) {
 
 		let h = formState.inputs.hours.value;
 		let m = formState.inputs.minutes.value;
+		let toDelete = formState.inputs.delete.value;
 
 		const postingDate = new Date(
 			`${year}-${month}-${day} ${formState.inputs.hours.value}:${formState.inputs.minutes.value}:01`
@@ -54,9 +75,9 @@ function InsertRecord({ clear, wData }) {
 		console.log('PoPPosto: ' + postingDate);
 
 		const records = await sendRequest(
-			'attendance/insertRecors',
+			'attendance/editRecors',
 			'POST',
-			{ date: postingDate, tagId: wData.employee.tagId },
+			{ date: postingDate, recordId: wData.record._id, delete: toDelete },
 			{
 				'Content-Type': 'application/json',
 			}
@@ -74,7 +95,6 @@ function InsertRecord({ clear, wData }) {
 		let inputs = formState.inputs;
 		let keys = Object.keys(formState.inputs);
 
-		// console.log(wData);
 		const inputsVisual = keys.map(k => {
 			let i = inputs[k];
 			return (
@@ -89,6 +109,7 @@ function InsertRecord({ clear, wData }) {
 					onInput={inputHandler}
 					initValue={i.initValue}
 					initIsValid={i.initIsValid}
+					onClick={i.click}
 				/>
 			);
 		});
@@ -108,7 +129,7 @@ function InsertRecord({ clear, wData }) {
 					<p>{wData.date}</p>
 				</div>
 				<div className={classes.form}>
-					{setInputs()}
+					<section className={classes.form__inputs}>{setInputs()}</section>
 					<Button
 						clname='danger'
 						onClick={closeCard}
@@ -122,7 +143,7 @@ function InsertRecord({ clear, wData }) {
 						disabled={!formState.isValid}
 						onClick={postData}
 					>
-						Inserisci
+						Modifica
 					</Button>
 				</div>
 			</div>
@@ -130,4 +151,4 @@ function InsertRecord({ clear, wData }) {
 	);
 }
 
-export default InsertRecord;
+export default EditRecord;
