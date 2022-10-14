@@ -11,30 +11,30 @@ import { useForm } from '../../../hooks/form-hook';
 import { VALIDATOR_MIN, VALIDATOR_MAX } from '../../../utils/validators';
 import { useHttpClient } from '../../../hooks/http-hooks';
 
-function InsertRecord({ clear, wData }) {
+function InsertRecord({ clear, wData, edit }) {
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
 	const [formState, inputHandler, setFormData] = useForm({
 		hours: {
 			value: '',
-			isValid: false,
+			isValid: edit ? true : false,
 			el: 'input',
 			type: 'number',
 			label: 'Ore',
 			validator: [VALIDATOR_MIN(0), VALIDATOR_MAX(24)],
-			initValue: '',
-			initIsValid: false,
+			initValue: edit ? wData.time.split(':')[0] : '',
+			initIsValid: edit ? true : false,
 			errorText: 'Valore deve essere fra 0 e 24',
 		},
 		minutes: {
 			value: '',
-			isValid: false,
+			isValid: edit ? true : false,
 			el: 'input',
 			type: 'number',
 			label: 'Minuti',
 			validator: [VALIDATOR_MIN(0), VALIDATOR_MAX(59)],
-			initValue: '',
-			initIsValid: false,
+			initValue: edit ? wData.time.split(':')[1] : '',
+			initIsValid: edit ? true : false,
 			errorText: 'Valore deve essere fra 0 e 59',
 		},
 	});
@@ -51,14 +51,27 @@ function InsertRecord({ clear, wData }) {
 		const postingDate = new Date(
 			`${year}-${month}-${day} ${formState.inputs.hours.value}:${formState.inputs.minutes.value}:01`
 		);
-		// console.log('PoPPosto: ' + postingDate);
+		console.log('PoPPosto: ' + postingDate);
+		let url;
+		let body;
+		switch (edit) {
+			case false:
+				url = 'attendance/insertRecors';
+				body = { date: postingDate, tagId: wData.employee.tagId };
+				break;
+			case true:
+				url = 'attendance/editRecors';
+				body = { date: postingDate, recordId: wData.record._id };
+				break;
 
-		const records = await sendRequest(
-			'attendance/insertRecors',
-			'POST',
-			{ date: postingDate, tagId: wData.employee.tagId },
-			{ 'Content-Type': 'application/json' }
-		);
+			default:
+				break;
+		}
+
+		const records = await sendRequest(url, 'POST', body, {
+			'Content-Type': 'application/json',
+		});
+
 		clear(true);
 	};
 
@@ -71,6 +84,7 @@ function InsertRecord({ clear, wData }) {
 		let inputs = formState.inputs;
 		let keys = Object.keys(formState.inputs);
 
+		// console.log(wData);
 		const inputsVisual = keys.map(k => {
 			let i = inputs[k];
 			return (
@@ -118,7 +132,7 @@ function InsertRecord({ clear, wData }) {
 						disabled={!formState.isValid}
 						onClick={postData}
 					>
-						Inserisci
+						{edit ? 'Modifica' : 'Inserisci'}
 					</Button>
 				</div>
 			</div>

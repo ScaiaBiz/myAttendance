@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get('/postRecord/:tagId', attendanceCtrl.postRecord);
 router.post('/insertRecors', attendanceCtrl.insertRecord);
+router.post('/editRecors', attendanceCtrl.editRecord);
 
 router.post('/getRecords', attendanceCtrl.getRecords);
 

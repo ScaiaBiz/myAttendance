@@ -84,6 +84,11 @@
 .dailyTime_time {
 	min-width: fit-content;
 }
+.dailyTime_time:hover {
+	text-shadow: 0 0 1px var(--STOPED);
+	text-decoration: underline;
+	cursor: pointer;
+}
 
 .totRow {
 	/* padding: 0 6px; */
@@ -97,4 +102,16 @@
 .totRowError {
 	color: var(--STOPED);
 	font-weight: bold;
+}
+
+.addNewRecord {
+	/* color: var(--ENDEDtext); */
+	/* color: var(--ENDEDtext); */
+	/* color: gray; */
+	text-shadow: -1px -1px 2px white;
+}
+
+.addNewRecord:hover {
+	color: var(--ONGOING);
+	text-shadow: 1px 1px 2px black;
 }

@@ -48,8 +48,13 @@ function Presenze() {
 	};
 
 	const addNewRecord = () => {
+		console.log(currentDate);
 		const newRecordForm = (
-			<InsertRecord clear={insertRecordHandler} wData={currentDate} />
+			<InsertRecord
+				clear={insertRecordHandler}
+				wData={currentDate}
+				edit={currentDate.edit}
+			/>
 		);
 
 		return ReactDom.createPortal(
@@ -57,8 +62,6 @@ function Presenze() {
 			document.getElementById('modal-hook')
 		);
 	};
-
-	const editRecord = () => {};
 
 	const getRecors = async date => {
 		const records = await sendRequest(
@@ -162,15 +165,7 @@ function Presenze() {
 						// console.log(TotalMinToHourMin(workedMins));
 					}
 
-					return (
-						// <div
-						// 	className={classes.dailyTime_time}
-						// 	onClick={() => console.log({ recordDate })}
-						// >
-						// 	{m.isExit ? 'U: ' : 'E: '} {TimeFromDateString(m.date)}
-						// </div>
-						m
-					);
+					return m;
 				});
 
 				let rowExtra = workedMins - 8 * 60;
@@ -183,7 +178,15 @@ function Presenze() {
 								return (
 									<div
 										className={classes.dailyTime_time}
-										onClick={() => console.log(m.date)}
+										onClick={() =>
+											setCurrentDate({
+												date: fDate,
+												employee: e,
+												record: m,
+												edit: true,
+												time: TimeFromDateString(m.date),
+											})
+										}
 									>
 										{m.isExit ? 'U: ' : 'E: '} {TimeFromDateString(m.date)}
 									</div>
@@ -207,21 +210,18 @@ function Presenze() {
 							{TotalMinToHourMin(rowExtra)}
 						</div>
 						<div
-							className={classes.totRow}
+							className={`${classes.totRow} ${classes.addNewRecord}`}
 							style={{
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'flex-end',
 							}}
-							// onClick={() => {
-							// console.log(fDate);
-							// }}
 						>
 							<Svg
-								className={classes.totRow}
+								className={''}
 								text='add_circle'
 								action={() => {
-									setCurrentDate({ date: fDate, employee: e });
+									setCurrentDate({ date: fDate, employee: e, edit: false });
 								}}
 							/>
 						</div>

@@ -18,20 +18,46 @@ exports.postRecord = async (req, res, next) => {
 };
 
 exports.insertRecord = async (req, res, next) => {
-	console.log('Ricevo inserimento manuale');
-	const tagId = req.body.tagId;
-	const day = new Date(req.body.date);
+	try {
+		console.log('>>> Ricevo inserimento manuale');
+		const tagId = req.body.tagId;
+		const day = new Date(req.body.date);
 
-	console.log(req.body);
+		console.log(req.body);
 
-	const record = await new Attendance({
-		tagId: tagId,
-		date: day,
-	});
+		const record = await new Attendance({
+			tagId: tagId,
+			date: day,
+		});
 
-	record.save();
+		record.save();
+		res.status(201).json(record);
+	} catch (error) {
+		next(new HttpError(error, 404));
+	}
+};
 
-	res.status(201).json(record);
+exports.editRecord = async (req, res, next) => {
+	try {
+		console.log('>>> Ricevo modifica record');
+		console.log(req.body);
+		const recId = req.body.recordId;
+		const day = new Date(req.body.date);
+
+		console.log(req.body);
+
+		const record = await Attendance.findOne({
+			_id: recId,
+		});
+
+		record.date = day;
+
+		await record.save();
+
+		res.status(201).json(record);
+	} catch (error) {
+		next(new HttpError(error.message, 404));
+	}
 };
 
 exports.getRecords = async (req, res, next) => {
