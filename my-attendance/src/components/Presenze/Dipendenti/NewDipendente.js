@@ -76,26 +76,26 @@ const NewDipendente = ({ close }) => {
 			initIsValid: true,
 		},
 
-		turnId: {
-			value: '',
-			isValid: true,
-			el: 'input',
-			type: 'text',
-			label: 'Turno',
-			validator: [VALIDATOR_NO()],
-			initValue: '',
-			initIsValid: true,
-		},
-		groupId: {
-			value: '',
-			isValid: true,
-			el: 'input',
-			type: 'text',
-			label: 'Gruppo',
-			validator: [VALIDATOR_NO()],
-			initValue: '',
-			initIsValid: true,
-		},
+		// turnId: {
+		// 	value: '',
+		// 	isValid: true,
+		// 	el: 'input',
+		// 	type: 'text',
+		// 	label: 'Turno',
+		// 	validator: [VALIDATOR_NO()],
+		// 	initValue: '',
+		// 	initIsValid: true,
+		// },
+		// groupId: {
+		// 	value: '',
+		// 	isValid: true,
+		// 	el: 'input',
+		// 	type: 'text',
+		// 	label: 'Gruppo',
+		// 	validator: [VALIDATOR_NO()],
+		// 	initValue: '',
+		// 	initIsValid: true,
+		// },
 		enableExtras: {
 			value: '',
 			isValid: false,
@@ -165,7 +165,7 @@ const NewDipendente = ({ close }) => {
 					type={i.type}
 					label={i.label}
 					validators={i.validator}
-					errorText='Campo obbligatorio'
+					errorText={i.errorText || 'Campo obbligatorio'}
 					onInput={inputHandler}
 					initValue={i.initValue}
 					initIsValid={i.initIsValid}
