@@ -96,7 +96,9 @@ export const roundHoursFromDate = (date, toTheColser, isExit, round) => {
 		roundeMin = Math.round((min - 1 + round / 2) / round) * round;
 	}
 	// console.log({ roundeMin });
-	min = roundeMin;
+	if (round > 0) {
+		min = roundeMin;
+	}
 	if (roundeMin === 60) {
 		h += 1;
 		min = 0;
