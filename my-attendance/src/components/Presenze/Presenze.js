@@ -15,7 +15,7 @@ import { useHttpClient } from '../../hooks/http-hooks';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import ErrorModal from '../../utils/ErrorModal';
 import Svg from '../../utils/Svg';
-import FilterPanel from './Dipendenti/FilterPanel';
+import FilterPanel from './Presenze/FilterPanel';
 import InsertRecord from './Presenze/InsertRecord';
 import EditRecord from './Presenze/EditRecord';
 
@@ -26,6 +26,7 @@ function Presenze() {
 	const [homePage, setHomePage] = useState(null);
 	const [workingDate, setWorkingDate] = useState(null);
 	const [currentDate, setCurrentDate] = useState(null);
+	const [printingID, setprintingID] = useState(null);
 
 	const [showInsertRecord, setShowInsertRecord] = useState(false);
 	const insertRecordHandler = (reload = false) => {
@@ -88,6 +89,26 @@ function Presenze() {
 	}, [workingDate]);
 
 	let child = useOutlet();
+
+	const printEmployeeCard = () => {
+		const page = document.getElementById(printingID._id);
+		page.classList.toggle(classes.print);
+		window.print();
+	};
+
+	window.onafterprint = () => {
+		console.log('Stampa finita');
+		const page = document.getElementById(printingID._id);
+		page.classList.toggle(classes.print);
+		setprintingID(null);
+	};
+
+	useEffect(() => {
+		if (printingID) {
+			console.log(printingID);
+			printEmployeeCard();
+		}
+	}, [printingID]);
 
 	const getHomePage = async () => {
 		const today = new Date();
@@ -253,11 +274,22 @@ function Presenze() {
 			);
 
 			let card = (
-				<div className={classes.employeeCard}>
-					<div className={classes.employeeCardHeader}>
-						{e.name} {e.surname}
+				<div key={e._id} id={e._id}>
+					<div className={classes.employeeCard}>
+						<div className={classes.employeeCardHeader}>
+							<div className={classes.employeeCardHeader__Name}>
+								{e.name} {e.surname}
+							</div>
+							<div className={classes.employeeCardHeader__Print}>
+								<Svg
+									className={''}
+									text='print'
+									action={() => setprintingID(e)}
+								/>
+							</div>
+						</div>
+						<div className={classes.cardRows}>{dayRows}</div>
 					</div>
-					<div className={classes.cardRows}>{dayRows}</div>
 				</div>
 			);
 			return card;

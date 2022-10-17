@@ -87,7 +87,7 @@ function Menu() {
 	return (
 		<div className={classes.container}>
 			<nav className={classes.navigation}>{evalMenuElements(MenuElements)}</nav>
-			<div className={classes.navElOpen}> Login / Logout</div>
+			<div className={''}> Login / Logout</div>
 		</div>
 	);
 }

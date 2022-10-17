@@ -35,6 +35,19 @@
 	color: var(--ButtonStdTxtColor);
 	border: var(--ButtonStdTxtColor) 2px solid;
 }
+.reverseDanger {
+	background-color: var(--ButtonStdTxtColor);
+	color: var(--ButtonStdBgColor);
+	border: var(--ButtonStdBgColor) 2px solid;
+}
+.reverseDanger:hover,
+.reverseDanger:focus,
+.reverseDanger:active {
+	background-color: var(--ButtonDngrBgColor);
+	color: var(--ButtonDngrTxtColor);
+	border: var(--ButtonDngrTxtColor) 2px solid;
+	font-weight: bold;
+}
 
 .danger {
 	background-color: var(--ButtonDngrBgColor);
