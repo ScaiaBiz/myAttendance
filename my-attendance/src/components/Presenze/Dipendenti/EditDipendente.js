@@ -1,6 +1,6 @@
 import React from 'react';
 
-import classes from './NewDipendente.module.css';
+import classes from './EditDipendente.module.css';
 
 import { useForm } from '../../../hooks/form-hook';
 import { VALIDATOR_NO, VALIDATOR_REQUIRE } from '../../../utils/validators';
@@ -11,136 +11,127 @@ import Button from '../../../utils/Button/Button';
 import LoadingSpinner from '../../../utils/LoadingSpinner';
 import ErrorModal from '../../../utils/ErrorModal';
 
-const NewDipendente = ({ close }) => {
+function EditDipendente({ close, employee }) {
+	// console.log(employee);
 	const [formState, inputHandler, setFormData] = useForm({
 		name: {
-			value: '',
-			isValid: false,
+			value: employee.name,
+			isValid: true,
 			el: 'input',
 			type: 'text',
 			label: 'Nome',
 			validator: [VALIDATOR_REQUIRE()],
-			initValue: '',
-			initIsValid: false,
+			initValue: employee.name,
+			initIsValid: true,
 		},
 		surname: {
-			value: '',
-			isValid: false,
+			value: employee.surname,
+			isValid: true,
 			el: 'input',
 			type: 'text',
 			label: 'Cognome',
 			validator: [VALIDATOR_REQUIRE()],
-			initValue: '',
-			initIsValid: false,
+			initValue: employee.surname,
+			initIsValid: true,
 		},
 
 		hiringDate: {
-			value: '',
-			isValid: false,
+			value: employee.hiringDate,
+			isValid: true,
 			el: 'date',
 			type: 'date',
 			label: 'Data assunzione',
 			validator: [VALIDATOR_NO()],
-			initValue: '',
-			initIsValid: false,
+			initValue: employee.hiringDate.split('T')[0],
+			initIsValid: true,
 		},
 		tagId: {
-			value: '',
-			isValid: false,
+			value: employee.tagId,
+			isValid: true,
 			el: 'input',
 			type: 'number',
 			label: 'Nr. Tag',
 			validator: [VALIDATOR_REQUIRE()],
-			initValue: '',
-			initIsValid: false,
+			initValue: employee.tagId,
+			initIsValid: true,
 		},
 		roundsIN: {
-			value: '',
+			value: employee.roundsIN,
 			isValid: true,
 			el: 'input',
 			type: 'number',
 			label: 'Arrot. Entrata',
 			validator: [VALIDATOR_REQUIRE()],
-			initValue: 15,
+			initValue: employee.roundsIN,
 			initIsValid: true,
 		},
 		roundsOUT: {
-			value: '',
+			value: employee.roundsOUT,
 			isValid: true,
 			el: 'input',
 			type: 'number',
 			label: 'Arrot. USCITA',
 			validator: [VALIDATOR_REQUIRE()],
-			initValue: 15,
+			initValue: employee.roundsOUT,
 			initIsValid: true,
 		},
-
-		// turnId: {
-		// 	value: '',
-		// 	isValid: true,
-		// 	el: 'input',
-		// 	type: 'text',
-		// 	label: 'Turno',
-		// 	validator: [VALIDATOR_NO()],
-		// 	initValue: '',
-		// 	initIsValid: true,
-		// },
-		// groupId: {
-		// 	value: '',
-		// 	isValid: true,
-		// 	el: 'input',
-		// 	type: 'text',
-		// 	label: 'Gruppo',
-		// 	validator: [VALIDATOR_NO()],
-		// 	initValue: '',
-		// 	initIsValid: true,
-		// },
-		// enableExtras: {
-		// 	value: '',
-		// 	isValid: false,
-		// 	el: 'checkbox',
-		// 	type: 'checkbox',
-		// 	label: 'Straordinari',
-		// 	validator: [VALIDATOR_NO()],
-		// 	initValue: true,
-		// 	initIsValid: true,
-		// },
-		// isActive: {
-		// 	value: '',
-		// 	isValid: false,
-		// 	el: 'checkbox',
-		// 	type: 'checkbox',
-		// 	label: 'Attivo',
-		// 	validator: [VALIDATOR_NO()],
-		// 	initValue: true,
-		// 	initIsValid: true,
-		// },
+		enableExtras: {
+			value: employee.enableExtras,
+			isValid: true,
+			el: 'checkbox',
+			type: 'checkbox',
+			label: 'Straordinari',
+			validator: [VALIDATOR_NO()],
+			initValue: employee.enableExtras,
+			initIsValid: true,
+		},
+		isActive: {
+			value: employee.isActive,
+			isValid: true,
+			el: 'checkbox',
+			type: 'checkbox',
+			label: 'Attivo',
+			validator: [VALIDATOR_NO()],
+			initValue: employee.isActive,
+			initIsValid: true,
+		},
 	});
 
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
 	const postData = async e => {
 		e.preventDefault();
-		console.log('Invio Richiesta');
 		const rdata = formState.inputs;
 		let i = await sendRequest(
-			'employee/postNewEmployee',
+			'employee/editEmployee',
 			'POST',
 			{
+				_id: employee._id,
 				name: rdata.name.value,
 				surname: rdata.surname.value,
 				hiringDate: rdata.hiringDate.value,
 				tagId: rdata.tagId.value,
 				roundsIN: rdata.roundsIN.value,
 				roundsOUT: rdata.roundsOUT.value,
-				enableExtras: true,
-				isActive: true,
+				enableExtras: rdata.enableExtras.value,
+				isActive: rdata.isActive.value,
 				turnId: '',
 				groupId: '',
 			},
 			{ 'Content-Type': 'application/json' }
 		);
+		close(true);
+	};
 
+	const postDeleteEmpliyee = async e => {
+		e.preventDefault();
+		console.log(employee.tagId);
+		let i = await sendRequest(
+			'employee/deleteEmployee',
+			'POST',
+			{ tagId: employee.tagId, id: employee._id },
+			{ 'Content-Type': 'application/json' }
+		);
 		close(true);
 	};
 
@@ -152,7 +143,6 @@ const NewDipendente = ({ close }) => {
 	const setInputs = () => {
 		let inputs = formState.inputs;
 		let keys = Object.keys(formState.inputs);
-		// console.log(formState.inputs);
 
 		const inputsVisual = keys.map(k => {
 			let i = inputs[k];
@@ -183,11 +173,11 @@ const NewDipendente = ({ close }) => {
 				<div className={classes.form}>
 					{setInputs()}
 					<Button
-						clname='danger'
-						onClick={closeCard}
+						clname='reverseDanger'
+						onClick={postDeleteEmpliyee}
 						style={{ width: 25 + '%', fontSize: 20 + 'px' }}
 					>
-						Annulla
+						Elimina
 					</Button>
 					<Button
 						clname='confirm'
@@ -195,11 +185,19 @@ const NewDipendente = ({ close }) => {
 						disabled={!formState.isValid}
 						onClick={postData}
 					>
-						Inserisci
+						Modifica
 					</Button>
 				</div>
+				<Button
+					clname='danger'
+					onClick={closeCard}
+					style={{ width: 25 + '%', fontSize: 20 + 'px' }}
+				>
+					Annulla
+				</Button>
 			</div>
 		</React.Fragment>
 	);
-};
-export default NewDipendente;
+}
+
+export default EditDipendente;

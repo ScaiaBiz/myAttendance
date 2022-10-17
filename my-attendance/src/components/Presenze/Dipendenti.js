@@ -8,16 +8,34 @@ import LoadingSpinner from '../../utils/LoadingSpinner';
 import ErrorModal from '../../utils/ErrorModal';
 
 import NewDipendente from './Dipendenti/NewDipendente';
+import EditDipendente from './Dipendenti/EditDipendente';
 
 function Dipendenti() {
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
 	const [employees, setEmployees] = useState(null);
 
+	const [selectedEmplyee, setSelectedEmplyee] = useState(null);
 	const [showAddEmployee, setShowAddEmployee] = useState(false);
-	const handleAddEmployee = () => {
+	const handleAddEmployee = (reload = false) => {
 		setShowAddEmployee(!showAddEmployee);
+		if (reload) {
+			getEmployeesList();
+		}
 	};
+
+	const [showEditEmployee, setShowEditEmployee] = useState(false);
+	const handleEditEmployee = (reload = false) => {
+		if (showEditEmployee) {
+			setSelectedEmplyee(null);
+		}
+		if (reload) {
+			getEmployeesList();
+		}
+		setShowEditEmployee(!showEditEmployee);
+	};
+
+	// const []
 
 	const getEmployeesList = async () => {
 		let data = await sendRequest('employee/getEmployeesList');
@@ -29,53 +47,6 @@ function Dipendenti() {
 		getEmployeesList();
 	}, []);
 
-	// let employees = [
-	// 	{
-	// 		_id: 0,
-	// 		name: 'Paolo',
-	// 		surname: 'Rossi',
-	// 		tagId: '000',
-	// 		hiringDate: '2022-01-01',
-	// 		isActive: true,
-	// 		roundsIN: 15,
-	// 		roundsOUT: 15,
-	// 		enableExtras: true,
-	// 		turnId: 0,
-	// 		groupId: 0,
-	// 	},
-	// 	{
-	// 		_id: 1,
-	// 		name: 'Fabio',
-	// 		surname: 'Grosso',
-	// 		tagId: '001',
-	// 		hiringDate: '2022-01-01',
-	// 		isActive: true,
-	// 		roundsIN: 15,
-	// 		roundsOUT: 15,
-	// 		enableExtras: true,
-	// 		turnId: 0,
-	// 		groupId: 0,
-	// 	},
-	// 	{
-	// 		_id: 2,
-	// 		name: 'Andrea',
-	// 		surname: 'Pirlo',
-	// 		tagId: '002',
-	// 		hiringDate: '2022-01-01',
-	// 		isActive: true,
-	// 		roundsIN: 15,
-	// 		roundsOUT: 15,
-	// 		enableExtras: true,
-	// 		turnId: 0,
-	// 		groupId: 0,
-	// 	},
-	// ];
-
-	// useEffect(async () => {
-	// 	let test = await sendRequest('employee/getEmployeesList');
-	// 	employees.push(test);
-	// }, []);
-
 	const addNewEmployee = () => {
 		const newEmployeeForm = <NewDipendente close={handleAddEmployee} />;
 		return ReactDom.createPortal(
@@ -84,10 +55,33 @@ function Dipendenti() {
 		);
 	};
 
+	const editEmployee = () => {
+		console.log(selectedEmplyee);
+		const editEmployee = (
+			<EditDipendente close={handleEditEmployee} employee={selectedEmplyee} />
+		);
+
+		return ReactDom.createPortal(
+			editEmployee,
+			document.getElementById('modal-hook')
+		);
+	};
+
+	useEffect(() => {
+		if (selectedEmplyee) {
+			console.log(selectedEmplyee);
+			handleEditEmployee();
+		}
+	}, [selectedEmplyee]);
+
 	const createEmployeesVisula = () => {
 		const visual = employees.map(e => {
 			return (
-				<div key={e._id} className={`${classes.empCard} ${e.isActive}`}>
+				<div
+					key={e._id}
+					className={`${classes.empCard} ${e.isActive}`}
+					onClick={() => setSelectedEmplyee(e)}
+				>
 					<h2>
 						{e.name} {e.surname}
 					</h2>
@@ -106,6 +100,7 @@ function Dipendenti() {
 			{isLoading && <LoadingSpinner asOverlay />}
 			{error && <ErrorModal error={error} onClear={clearError} />}
 			{showAddEmployee && addNewEmployee()}
+			{showEditEmployee && editEmployee()}
 			<div className={classes.container}>
 				<h1
 					className={classes.addEmployee}

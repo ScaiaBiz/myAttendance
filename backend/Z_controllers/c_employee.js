@@ -1,6 +1,8 @@
 const HttpError = require('../O_models/m_error');
 
 const Employee = require('../O_models/m_employee');
+const Attendance = require('../O_models/m_attentdance');
+const e = require('express');
 
 exports.getEmplyeesList = async (req, res, next) => {
 	console.log('>>> Ricevo richiesta elenco dipendneti');
@@ -47,12 +49,74 @@ exports.postNewEmployee = async (req, res, next) => {
 			);
 		}
 	} catch (err) {
-		next(new HttpError('Errore non identificato: ' + err, 404));
+		next(new HttpError('Errore non identificato: ' + err.message, 404));
 	}
+};
 
-	// const employee = new Employee();
+exports.editEmplyeeData = async (req, res, next) => {
+	console.log('>>> Ricevo dati per modifica dipendente');
+	const rdata = req.body;
+	console.log(rdata);
+	try {
+		const emploiyee = await Employee.findOne({
+			_id: rdata._id,
+		});
+
+		if (!emploiyee) {
+			next(new HttpError('Dipendente non trovato!', 404));
+		}
+
+		if (emploiyee.tagId !== rdata.tagId) {
+			console.log('Il tag è cambiato, registro la modifica');
+			emploiyee.oldsTag.push({ tagId: emploiyee.tagId, editDate: new Date() });
+			emploiyee.tagId = rdata.tagId;
+		}
+
+		emploiyee.name = rdata.name;
+		emploiyee.surname = rdata.surname;
+		emploiyee.hiringDate = rdata.hiringDate;
+		emploiyee.roundsIN = rdata.roundsIN;
+		emploiyee.roundsOUT = rdata.roundsOUT;
+		emploiyee.enableExtras = rdata.enableExtras || emploiyee.enableExtras;
+		emploiyee.isActive = rdata.isActive || emploiyee.isActive;
+
+		let data = await emploiyee.save();
+
+		res.status(201).json(data);
+	} catch (err) {
+		next(new HttpError('Errore non identificato: ' + err.message, 404));
+	}
+};
+
+exports.deleteEmplyeeData = async (req, res, next) => {
+	const tagId = req.body.tagId;
+	const id = req.body.id;
+	try {
+		const canDelete = await Attendance.findOne({ tagId: tagId });
+		const employee = await Employee.findOne({ _id: id });
+
+		if (canDelete || tagId != employee.tagId) {
+			next(
+				new HttpError(
+					'Esistono timbrature collegate a questo dipendete, è preferibile modificarlo come NON ATTIVO',
+					404
+				)
+			);
+		}
+
+		if (!employee) {
+			next(
+				new HttpError(
+					'Dipendente non trovato! - Probabilmente è già stato eliminato',
+					404
+				)
+			);
+		}
+		data = await employee.delete();
+		res.status(201).json(data);
+	} catch (error) {
+		next(new HttpError('Errore non identificato: ' + error.message, 404));
+	}
 };
 
 exports.getEmplyeeData = async (req, res, next) => {}; //??? Serve davvero?
-
-exports.editEmplyeeData = async (req, res, next) => {};
